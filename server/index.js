@@ -7,6 +7,8 @@ const cors = require("cors");
 const { OAuth2Client } = require("google-auth-library");
 const dotenv = require("dotenv");
 const jwt = require("jsonwebtoken");
+const querystring = require("querystring");
+const { PublicClientApplication } = require("@azure/msal-node");
 
 dotenv.config();
 
@@ -22,6 +24,27 @@ const client = new OAuth2Client(
   process.env.GOOGLE_CLIENT_SECRET,
   "http://localhost:3000/auth/google/callback"
 );
+const graphMeEndpoint = "https://graph.microsoft.com/v1.0/me";
+const microsoftRedirectURI =
+  "https://localhost:3000/authentication/login-callback";
+
+const msalConfig = {
+  auth: {
+    clientId: process.env.MICROSOFT_CLIENT_ID,
+    authority: `https://login.microsoftonline.com/${process.env.MICROSOFT_CLIENT_TENANT_ID}`,
+    redirectUri: "https://localhost:5173",
+    clientSecret: process.env.MICROSOFT_CLIENT_SECRET,
+  },
+  cache: {
+    cacheLocation: "sessionStorage",
+    storeAuthStateInCookie: false,
+  },
+  system: {
+    tokenRenewalOffsetSeconds: 300,
+  },
+};
+
+const pca = new PublicClientApplication(msalConfig);
 
 // Routes
 app.get("/auth/google", (req, res) => {
@@ -95,6 +118,31 @@ app.get("/auth/google/callback", async (req, res) => {
   } catch (error) {
     console.log(error);
   }
+});
+
+// Microsoft Oauth
+app.get("/microsoft", (req, res) => {
+  res.send('<a href="/microsoft/auth">Login with Microsoft</a>');
+});
+
+app.get("/signin-microsoft", (req, res) => {
+  const authCodeUrlParameters = {
+    scopes: ["user.read"],
+    redirectUri: "https://localhost:5173",
+  };
+
+  pca
+    .getAuthCodeUrl(authCodeUrlParameters)
+    .then((response) => {
+      console.log(response);
+      res.redirect(response);
+    })
+    .catch((error) => console.log(JSON.stringify(error)));
+});
+
+app.get("/authentication/login-callback", (req, res) => {
+  console.log("wlecome microsoft");
+  res.send("microsoft");
 });
 
 app.get("/api/profile", (req, res) => {
