@@ -1,0 +1,34 @@
+body {
+  background: rgba(36, 34, 34, 0.877);
+}
+main {
+  text-align: center;
+  display: flex;
+  justify-content: center;
+}
+.box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-self: center;
+  margin-top: 7rem;
+  border: none;
+  padding: 30px;
+  border-radius: 5px;
+  width: 500px;
+  height: 250px;
+  background: rgb(117, 123, 214);
+}
+
+img {
+  border: 1px solid azure;
+  border-radius: 50%;
+}
+
+button {
+  border: none;
+  border-radius: 10px;
+  padding: 15px;
+  margin: 5px;
+  background: rgb(185, 192, 197);
+}
