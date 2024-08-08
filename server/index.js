@@ -7,11 +7,7 @@ const cors = require("cors");
 const { OAuth2Client } = require("google-auth-library");
 const dotenv = require("dotenv");
 const jwt = require("jsonwebtoken");
-const querystring = require("querystring");
-const {
-  PublicClientApplication,
-  ConfidentialClientApplication,
-} = require("@azure/msal-node");
+const { ConfidentialClientApplication } = require("@azure/msal-node");
 
 dotenv.config();
 
@@ -99,7 +95,7 @@ app.get("/auth/google/callback", async (req, res) => {
       req.session.user,
       process.env.ACCESS_TOKEN_SECRET,
       {
-        expiresIn: 60 * 5,
+        expiresIn: "1h",
       }
     );
 
@@ -163,16 +159,17 @@ app.get("/auth/microsoft/callback", async (req, res) => {
       throw new Error("Access token is missing from the response.");
     }
 
+    const data = response.idTokenClaims;
     console.log("Access Token:", response.accessToken);
+    console.log(response);
 
-    const userResponse = fetch(graphMeEndpoint, {
+    const userResponse = await fetch(graphMeEndpoint, {
       headers: {
-        Authorizaion: `Bearer ${response.accessToken}`,
+        Authorization: `Bearer ${response.accessToken}`,
       },
     });
 
     if (!userResponse.ok) {
-      const errorText = await userResponse.text();
       throw new Error(`Microsoft Graph API error: ${userResponse.status}`);
     }
 
@@ -182,8 +179,8 @@ app.get("/auth/microsoft/callback", async (req, res) => {
 
     req.session.user = {
       displayName: userProfile.displayName,
-      email: userProfile.userPrincipalName,
-      // picture: userProfile.photo,
+      email: userProfile.email,
+      picture: userProfile.photo,
     };
 
     const accessToken = jwt.sign(
