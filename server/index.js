@@ -8,7 +8,10 @@ const { OAuth2Client } = require("google-auth-library");
 const dotenv = require("dotenv");
 const jwt = require("jsonwebtoken");
 const querystring = require("querystring");
-const { PublicClientApplication } = require("@azure/msal-node");
+const {
+  PublicClientApplication,
+  ConfidentialClientApplication,
+} = require("@azure/msal-node");
 
 dotenv.config();
 
@@ -24,15 +27,16 @@ const client = new OAuth2Client(
   process.env.GOOGLE_CLIENT_SECRET,
   "http://localhost:3000/auth/google/callback"
 );
+
 const graphMeEndpoint = "https://graph.microsoft.com/v1.0/me";
-const microsoftRedirectURI =
-  "https://localhost:3000/authentication/login-callback";
+const microsoftRedirectURI = "http://localhost:3000/auth/microsoft/callback";
+const clientUri = "http://localhost:5173";
 
 const msalConfig = {
   auth: {
     clientId: process.env.MICROSOFT_CLIENT_ID,
-    authority: `https://login.microsoftonline.com/${process.env.MICROSOFT_CLIENT_TENANT_ID}`,
-    redirectUri: "https://localhost:5173",
+    authority: `https://login.microsoftonline.com/consumers`, // MICROSOFT_CLIENT_TENANT_ID
+    redirectUri: microsoftRedirectURI,
     clientSecret: process.env.MICROSOFT_CLIENT_SECRET,
   },
   cache: {
@@ -44,7 +48,7 @@ const msalConfig = {
   },
 };
 
-const pca = new PublicClientApplication(msalConfig);
+const pca = new ConfidentialClientApplication(msalConfig);
 
 // Routes
 app.get("/auth/google", (req, res) => {
@@ -66,9 +70,7 @@ app.get("/auth/google/callback", async (req, res) => {
 
   try {
     if (error) {
-      return res.redirect(
-        `${clientUri}/auth/login?success=false&error=${error}`
-      );
+      return res.redirect(`${clientUri}/?success=false&error=${error}`);
     }
 
     const { tokens } = await client.getToken(code);
@@ -114,39 +116,103 @@ app.get("/auth/google/callback", async (req, res) => {
       maxAge: 1000 * 60 * 60 * 24 * 7,
     });
 
-    res.redirect(`http://localhost:5173/profile?accessToken=${accessToken}`);
+    res.redirect(`${clientUri}/login?accessToken=${accessToken}`);
   } catch (error) {
-    console.log(error);
+    console.error("Error during Google OAuth callback:", err);
+    res.status(500).send("Authentication failed.");
   }
 });
 
 // Microsoft Oauth
-app.get("/microsoft", (req, res) => {
-  res.send('<a href="/microsoft/auth">Login with Microsoft</a>');
-});
-
-app.get("/signin-microsoft", (req, res) => {
+app.get("/auth/microsoft", (req, res) => {
   const authCodeUrlParameters = {
     scopes: ["user.read"],
-    redirectUri: "https://localhost:5173",
+    redirectUri: microsoftRedirectURI,
   };
 
   pca
     .getAuthCodeUrl(authCodeUrlParameters)
     .then((response) => {
-      console.log(response);
       res.redirect(response);
     })
-    .catch((error) => console.log(JSON.stringify(error)));
+    .catch((error) => {
+      console.error("Error generating Microsoft auth URL:", error);
+      res.status(500).send("Failed to initiate Microsoft authentication.");
+    });
 });
 
-app.get("/authentication/login-callback", (req, res) => {
-  console.log("wlecome microsoft");
-  res.send("microsoft");
+app.get("/auth/microsoft/callback", async (req, res) => {
+  const { code, error } = req.query;
+
+  if (error) {
+    console.error("Microsoft OAuth error:", error);
+    return res.redirect(`${clientUri}/?success=false&error=${error}`);
+  }
+
+  const tokenRequest = {
+    code,
+    redirectUri: microsoftRedirectURI,
+    scopes: ["user.read"],
+    clientSecret: process.env.MICROSOFT_CLIENT_SECRET,
+  };
+
+  try {
+    const response = await pca.acquireTokenByCode(tokenRequest);
+
+    if (!response.accessToken) {
+      throw new Error("Access token is missing from the response.");
+    }
+
+    console.log("Access Token:", response.accessToken);
+
+    const userResponse = fetch(graphMeEndpoint, {
+      headers: {
+        Authorizaion: `Bearer ${response.accessToken}`,
+      },
+    });
+
+    if (!userResponse.ok) {
+      const errorText = await userResponse.text();
+      throw new Error(`Microsoft Graph API error: ${userResponse.status}`);
+    }
+
+    const userProfile = await userResponse.json();
+
+    console.log(userProfile);
+
+    req.session.user = {
+      displayName: userProfile.displayName,
+      email: userProfile.userPrincipalName,
+      // picture: userProfile.photo,
+    };
+
+    const accessToken = jwt.sign(
+      req.session.user,
+      process.env.ACCESS_TOKEN_SECRET,
+      { expiresIn: "1h" }
+    );
+
+    const refreshToken = jwt.sign(
+      req.session.user,
+      process.env.REFRESH_TOKEN_SECRET,
+      { expiresIn: "7d" }
+    );
+
+    res.cookie("rftkn", refreshToken, {
+      httpOnly: true,
+      maxAge: 1000 * 60 * 60 * 24 * 7,
+    });
+
+    res.redirect(`${clientUri}/login?accessToken=${accessToken}`);
+  } catch (error) {
+    console.error("Error during Microsoft OAuth callback:", error);
+    res.status(500).send("Authentication failed.");
+  }
 });
 
 app.get("/api/profile", (req, res) => {
-  if (!req.session.user) {
+  if (!req.session || !req.session.user) {
+    console.warn("User is not authenticated or session does not exist.");
     return res.status(401).json({ message: "Not authenticated" });
   }
   res.json(req.session.user);
@@ -155,8 +221,10 @@ app.get("/api/profile", (req, res) => {
 app.get("/logout", (req, res) => {
   req.session.destroy((err) => {
     if (err) {
-      return res.status(500).send("failed to log out");
+      console.error("Error during logout:", err);
+      return res.status(500).send("Failed to log out.");
     }
+    res.clearCookie("rftkn");
     res.redirect("http://localhost:5173");
   });
 });
