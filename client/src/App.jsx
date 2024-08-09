@@ -1,29 +1,22 @@
-// src/HomePage.js
-
 import { useState, useEffect } from "react";
 import axios from "axios";
+import Login from "./components/Login";
+import Profile from "./components/Profile";
+import Home from "./components/Home";
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  // Navigate,
+} from "react-router-dom";
+import SurveyComponent from "./components/SurveyComponent";
 
 const App = () => {
   const [user, setUser] = useState(null);
 
-  const handleLogin = (provider) => {
-    window.location.href = `http://localhost:3000/auth/${provider}`;
-  };
-
-  const handleLogout = async () => {
-    try {
-      await axios.get(`http://localhost:3000/logout`, {
-        withCredentials: true,
-      });
-      setUser(null);
-      window.location.href = "/"; // Redirect to home page or login page after logout
-    } catch (error) {
-      console.error("Error during logout:", error);
-    }
-  };
-
   const fetchUserProfile = async () => {
     try {
+      //https://localhost:3000/signin-microsoft
       const response = await axios.get(`http://localhost:3000/api/profile`, {
         withCredentials: true,
       });
@@ -38,25 +31,23 @@ const App = () => {
   }, []);
 
   return (
-    <div>
-      <h1>Home Page</h1>
-      {!user ? (
-        <div>
-          <button onClick={() => handleLogin("google")}>
-            Login with Google
-          </button>
-          <button onClick={() => handleLogin("microsoft")}>
-            Login with Microsoft
-          </button>
-        </div>
-      ) : (
-        <div>
-          <h2>Welcome, {user.displayName}!</h2>
-          <p>Email: {user.email}</p>
-          {user.picture && <img src={user.picture} alt="Profile" />}
-          <button onClick={handleLogout}>Logout</button>
-        </div>
-      )}
+    <div className="flex flex-col min-h-full">
+      {/* <h1 className="text-center">Login Page</h1> */}
+      <Router>
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route path="/" element={<Home />} />
+          <Route path="/survey-form" element={<SurveyComponent />} />
+          <Route
+            path="/profile"
+            element={
+              <Profile user={user} />
+              // user != null ? <Profile user={user} /> : <Navigate to="/" />
+            }
+          />
+        </Routes>
+      </Router>
+      {/* {!user ? <Login /> : <Profile user={user} setUser={setUser} />} */}
     </div>
   );
 };

@@ -25,7 +25,7 @@ const client = new OAuth2Client(
 );
 
 const graphMeEndpoint = "https://graph.microsoft.com/v1.0/me";
-const microsoftRedirectURI = "http://localhost:3000/auth/microsoft/callback";
+const microsoftRedirectURI = "http://localhost:3000/auth/microsoft/callback"; // https://localhost:3000/authentication/login-callback
 const clientUri = "http://localhost:5173";
 
 const msalConfig = {
@@ -112,9 +112,9 @@ app.get("/auth/google/callback", async (req, res) => {
       maxAge: 1000 * 60 * 60 * 24 * 7,
     });
 
-    res.redirect(`${clientUri}/login?accessToken=${accessToken}`);
+    res.redirect(`${clientUri}/profile?accessToken=${accessToken}`);
   } catch (error) {
-    console.error("Error during Google OAuth callback:", err);
+    console.error("Error during Google OAuth callback:", error);
     res.status(500).send("Authentication failed.");
   }
 });
@@ -137,6 +137,7 @@ app.get("/auth/microsoft", (req, res) => {
     });
 });
 
+//https://localhost:3000/signin-microsoft
 app.get("/auth/microsoft/callback", async (req, res) => {
   const { code, error } = req.query;
 
@@ -159,15 +160,24 @@ app.get("/auth/microsoft/callback", async (req, res) => {
       throw new Error("Access token is missing from the response.");
     }
 
-    const data = response.idTokenClaims;
-    console.log("Access Token:", response.accessToken);
-    console.log(response);
+    // const data = response.idTokenClaims;
+    // console.log("Access Token:", response.accessToken);
+    // console.log(response);
 
     const userResponse = await fetch(graphMeEndpoint, {
       headers: {
         Authorization: `Bearer ${response.accessToken}`,
       },
     });
+    const userPfp = await fetch(`${graphMeEndpoint}/me/photo/$value`, {
+      headers: {
+        Authorization: `Bearer ${response.accessToken}`,
+      },
+    });
+
+    const buffer = await userPfp.arrayBuffer();
+    const base64Image = Buffer.from(buffer).toString("base64");
+    const imageUrl = `data:image/jpeg;base64,${base64Image}`;
 
     if (!userResponse.ok) {
       throw new Error(`Microsoft Graph API error: ${userResponse.status}`);
@@ -179,8 +189,8 @@ app.get("/auth/microsoft/callback", async (req, res) => {
 
     req.session.user = {
       displayName: userProfile.displayName,
-      email: userProfile.email,
-      picture: userProfile.photo,
+      email: userProfile.mail,
+      picture: imageUrl,
     };
 
     const accessToken = jwt.sign(
@@ -200,7 +210,7 @@ app.get("/auth/microsoft/callback", async (req, res) => {
       maxAge: 1000 * 60 * 60 * 24 * 7,
     });
 
-    res.redirect(`${clientUri}/login?accessToken=${accessToken}`);
+    res.redirect(`${clientUri}/profile?accessToken=${accessToken}`);
   } catch (error) {
     console.error("Error during Microsoft OAuth callback:", error);
     res.status(500).send("Authentication failed.");

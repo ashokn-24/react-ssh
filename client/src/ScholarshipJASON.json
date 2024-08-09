@@ -1,0 +1,520 @@
+{
+
+  "title": {
+    "default": "Scholarship Application Form",
+    "ar": "استمارة طلب المنحة"
+  },
+  "description": {
+    "default": "Form to submit a scholarship application",
+    "ar": "استمارة لتقديم طلب المنحة الدراسية"
+  },
+  "logoPosition": "right",
+  "pages": [
+    {
+      "name": "page1",
+      "title": {
+        "default": "Applicant Personal Information",
+        "ar": "البيانات الشخصية"
+      },
+      "description": {
+        "ar": "يرجى الحرص على تعبئة البيانات كما هو مكتوب في الوثائق الرسمية",
+        "default": "Please be careful to fill out the data as written in the official documents"
+      },
+      "elements": [
+        {
+          "type": "text",
+          "name": "question1",
+          "title": {
+            "default": "First Name",
+            "ar": "الاسم الأول"
+          },
+          "titleLocation": "left"
+        },
+        {
+          "type": "text",
+          "name": "question2",
+          "startWithNewLine": false,
+          "title": {
+            "default": "Second Name",
+            "ar": "الاسم الثاني"
+          },
+          "titleLocation": "left"
+        },
+        {
+          "type": "text",
+          "name": "question4",
+          "title": {
+            "default": "Family Name",
+            "ar": "اسم العائلة"
+          }
+        },
+        {
+          "type": "text",
+          "name": "question5",
+          "title": {
+            "default": "Birth place, country",
+            "ar": "مكان الميلاد- المدينة-الدولة"
+          }
+        },
+        {
+          "type": "text",
+          "name": "question6",
+          "title": {
+            "default": "Date of birth",
+            "ar": "تاريخ الميلاد"
+          },
+          "inputType": "date"
+        },
+        {
+          "type": "radiogroup",
+          "name": "question7",
+          "title": {
+            "default": "Marital status ",
+            "ar": "الحالة الاجتماعية"
+          },
+          "choices": [
+            {
+              "value": "Item 1",
+              "text": {
+                "default": "Married",
+                "ar": "متزوج"
+              }
+            },
+            {
+              "value": "Item 2",
+              "text": {
+                "default": "Un married",
+                "ar": "اعزب"
+              }
+            }
+          ]
+        },
+        {
+          "type": "radiogroup",
+          "name": "question35",
+          "title": {
+            "default": "Gender",
+            "ar": "الجنس "
+          },
+          "choices": [
+            {
+              "value": "Item 1",
+              "text": {
+                "default": "Male",
+                "ar": "ذكر"
+              }
+            },
+            {
+              "value": "Item 2",
+              "text": {
+                "default": "Female",
+                "ar": "أنثى"
+              }
+            }
+          ]
+        },
+        {
+          "type": "radiogroup",
+          "name": "Kuwait Residency",
+          "title": {
+            "default": "Do you have a valid residence permit in Kuwait?",
+            "ar": "هل لديك اقامة سارية داخل الكويت"
+          },
+          "choices": [
+            {
+              "value": "Item 4",
+              "text": {
+                "default": "Yes",
+                "ar": "نعم "
+              }
+            },
+            {
+              "value": "Item 2",
+              "text": {
+                "default": "No",
+                "ar": "لا"
+              }
+            }
+          ]
+        },
+        {
+          "type": "dropdown",
+          "name": "question37",
+          "title": {
+            "default": "Select Nationality",
+            "ar": "الجنسية"
+          },
+          "choices": [
+            {
+              "value": "Item 1",
+              "text": {
+                "default": "Kuwaiti",
+                "ar": "كويتي"
+              }
+            },
+            {
+              "value": "Item 2",
+              "text": {
+                "default": "Non Kuwaiti",
+                "ar": "غير كويتي"
+              }
+            },
+            {
+              "value": "Item 3",
+              "text": {
+                "default": "Other",
+                "ar": "آخر"
+              }
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "name": "question38",
+          "title": {
+            "default": "Passport Number",
+            "ar": "رقم جواز السفر"
+          }
+        },
+        {
+          "type": "text",
+          "name": "question39",
+          "title": {
+            "default": "Passport expiry date",
+            "ar": "صلاحيه جواز السفر"
+          },
+          "inputType": "date"
+        }
+      ]
+    },
+    {
+      "name": "page2",
+      "title": {
+        "default": "Colleges and specializations for students applying for bachelor’s studies",
+        "ar": "الكليات والتخصصات للطلبة المتقدمون لدراسة البكالوريوس"
+      },
+      "description": {
+        "default": "Desires and specializations for nomination",
+        "ar": "الرغبات والتخصصات للترشيح"
+      },
+      "elements": [
+        {
+          "type": "dropdown",
+          "name": "question10",
+          "title": {
+            "default": "Choose college",
+            "ar": "اختر الكلية"
+          }
+        },
+        {
+          "type": "dropdown",
+          "name": "question11",
+          "title": {
+            "default": "Choose your major course",
+            "ar": "اختر التخصص"
+          }
+        }
+      ]
+    },
+    {
+      "name": "page3",
+      "title": {
+        "default": "Scientific recommendations",
+        "ar": "توصيات علمية"
+      },
+      "elements": [
+        {
+          "type": "text",
+          "name": "question8",
+          "title": {
+            "default": "Person Name",
+            "ar": "اسم الشخص"
+          }
+        },
+        {
+          "type": "text",
+          "name": "question9",
+          "title": {
+            "default": "Telephone Number",
+            "ar": "رقم الهاتف"
+          }
+        },
+        {
+          "type": "text",
+          "name": "question12",
+          "title": {
+            "default": "Address",
+            "ar": "العنوان"
+          }
+        },
+        {
+          "type": "text",
+          "name": "question13",
+          "title": {
+            "default": "Email address",
+            "ar": "عنوان البريد الإلكتروني"
+          }
+        }
+      ]
+    },
+    {
+      "name": "page4",
+      "title": {
+        "default": "Nomination Authority",
+        "ar": "جهة الترشيح"
+      },
+      "elements": [
+        {
+          "type": "text",
+          "name": "question14",
+          "title": {
+            "default": "How did you find out about the scholarship and who was the entity that directed you to register for this scholarship?",
+            "ar": "كيف عرفت بالمنحة ومن هي الجهة التي دلتك على التسجيل لهذه المنحة"
+          }
+        },
+        {
+          "type": "text",
+          "name": "question15",
+          "title": {
+            "default": "The name of the institution/association/university/body that nominated you for sponsorship",
+            "ar": "اسم المؤسسة/ الجمعية/الجامعة/ الجهة التي رشحتك للكفالة"
+          }
+        },
+        {
+          "type": "text",
+          "name": "question16",
+          "title": {
+            "default": "Name of the organization's director",
+            "ar": "اسم مدير المؤسسة"
+          }
+        },
+        {
+          "type": "text",
+          "name": "question17",
+          "title": {
+            "default": "Phone number -WhatsApp- (preceded by the international country code) ",
+            "ar": "رقم الهاتف -واتس اب- (مسبوقاً بالمفتاح الدولي للدولة) "
+          }
+        },
+        {
+          "type": "text",
+          "name": "question18",
+          "title": {
+            "default": "Email address of the organization manager *",
+            "ar": "البريد الإلكتروني لمدير المؤسسة"
+          }
+        }
+      ]
+    },
+    {
+      "name": "page5",
+      "title": {
+        "default": "Applicant Economic situation",
+        "ar": "الوضع الاقتصادي لمقدم الطلب"
+      },
+      "elements": [
+        {
+          "type": "dropdown",
+          "name": "question19",
+          "title": {
+            "default": "Who supports the family?",
+            "ar": "من الذي يعول الأسرة؟"
+          }
+        },
+        {
+          "type": "dropdown",
+          "name": "question23",
+          "title": {
+            "default": "Do you work?",
+            "ar": "هل تعمل؟"
+          },
+          "choices": [
+            {
+              "value": "Item 1",
+              "text": {
+                "default": "Yes",
+                "ar": "نعم "
+              }
+            },
+            {
+              "value": "Item 2",
+              "text": {
+                "default": "No",
+                "ar": "لا"
+              }
+            }
+          ]
+        },
+        {
+          "type": "dropdown",
+          "name": "question22",
+          "title": {
+            "default": "Do you work/volunteer with a charity?",
+            "ar": "هل لك عمل/ تطوع مع إحدى الجمعيات الخيرية؟"
+          },
+          "choices": [
+            {
+              "value": "Item 1",
+              "text": {
+                "default": "Yes",
+                "ar": "نعم "
+              }
+            },
+            {
+              "value": "Item 2",
+              "text": {
+                "default": "No",
+                "ar": "لا"
+              }
+            }
+          ]
+        },
+        {
+          "type": "dropdown",
+          "name": "question21",
+          "title": {
+            "default": "Do you receive a grant from another party?",
+            "ar": "هل تتلقى منحة من جهة أخرى؟"
+          },
+          "choices": [
+            {
+              "value": "Item 1",
+              "text": {
+                "default": "Yes",
+                "ar": "نعم "
+              }
+            },
+            {
+              "value": "Item 2",
+              "text": {
+                "default": "No",
+                "ar": "لا"
+              }
+            }
+          ]
+        },
+        {
+          "type": "dropdown",
+          "name": "question20",
+          "title": {
+            "default": "If you get a grant. What type of scholarship?",
+            "ar": "إذا كنت تحصل على منحة. ما نوع المنحة؟"
+          },
+          "choices": [
+            {
+              "value": "Item 1",
+              "text": {
+                "default": "Yes",
+                "ar": "نعم "
+              }
+            },
+            {
+              "value": "Item 2",
+              "text": {
+                "default": "No",
+                "ar": "لا"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "page6",
+      "title": {
+        "default": "Applicant Files Attachment",
+        "ar": "مرفق ملفات مقدم الطلب"
+      },
+      "elements": [
+        {
+          "type": "file",
+          "name": "question24",
+          "title": {
+            "default": "Certified copy of birth certificate",
+            "ar": "نسخة مصدقة من شهادة الميلاد"
+          }
+        },
+        {
+          "type": "file",
+          "name": "question25",
+          "title": {
+            "default": "Personal photo (with blue background) *",
+            "ar": "صورة شخصية (بخلفية زرقاء) "
+          }
+        },
+        {
+          "type": "file",
+          "name": "question26",
+          "title": {
+            "default": "A certified and certified copy of the high school diploma",
+            "ar": "صورة شهادة الثانوية مصدقة ومعتمدة *"
+          }
+        },
+        {
+          "type": "file",
+          "name": "question27",
+          "title": {
+            "default": "A copy of the detailed grade certificate for the first, second and third grades of secondary school (certified and certified) *",
+            "ar": "صورة الشهادة التفصيلية للدرجات للصفوف الاول والثاني والثالث الثانوي (معتمدة ومصدقة) "
+          }
+        },
+        {
+          "type": "file",
+          "name": "question28",
+          "title": {
+            "default": "A copy of the passport (personal information page and passport data page) *",
+            "ar": "نسخة من جواز السفر(صفحة المعلومات الشخصية وصفحة بيانات الجواز)"
+          }
+        },
+        {
+          "type": "file",
+          "name": "question29",
+          "title": {
+            "default": "Make sure that the passport is valid for no less than three years from the date of submitting the application",
+            "ar": "تأكد من وجود صلاحية للجواز لاتقل علن ثلاث سنوات من تاريخ تقديم الطلب"
+          }
+        },
+        {
+          "type": "file",
+          "name": "question30",
+          "title": {
+            "default": "Health examination report (HIV - HBSAG(B+C) - syphilis - tuberculosis - leprosy) *",
+            "ar": "تقرير الفحص الصحي (فيروس نقص المناعة البشرية – HBSAG(B+C) – الزهري – السل – الجذام) "
+          }
+        },
+        {
+          "type": "file",
+          "name": "question31",
+          "title": {
+            "default": "A certificate of proficiency in the Arabic language is mandatory for those who have graduated from high school from non-Arab countries",
+            "ar": "شهادة إتقان اللغة العربية الزامي للحاصلين على الثانوية من دول غير عربية"
+          }
+        },
+        {
+          "type": "file",
+          "name": "question32",
+          "title": {
+            "default": "Criminal status newspaper (certificate of good conduct) *",
+            "ar": "صحيفة الحالة الجنائية (شهادة حسن السيرة والسلوك) *"
+          }
+        },
+        {
+          "type": "file",
+          "name": "question33",
+          "title": {
+            "default": "A copy of the scientific recommendations (recommendations)",
+            "ar": "نسخة من التوصيات العلمية (التزكيات)"
+          }
+        },
+        {
+          "type": "file",
+          "name": "question34",
+          "title": {
+            "default": "Certificate of completion of aptitude test *",
+            "ar": "شهادةاتمام اختبار القدرات"
+          }
+        }
+      ]
+    }
+  ]
+}
